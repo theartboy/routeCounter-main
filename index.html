@@ -85,7 +85,8 @@
         let gv = 0
         let gradeList = ["5.4","5.5","5.6","5.7","5.8","5.9","5.10-","5.10+","5.11-","5.11+","5.12-","5.12+"]
 
-        function addBH() {
+        function addBH(e) {
+            e.preventDefault()
             gv = parseInt(grade.options[grade.selectedIndex].value)
             routeTotal += 1
             routeSum += gv
@@ -94,7 +95,8 @@
             updateText()
         }
 
-        function subBH() {
+        function subBH(e) {
+            e.preventDefault()
             if (routeTotal > 0) {
                 gv = parseInt(grade.options[grade.selectedIndex].value)
                 routeTotal -= 1
@@ -120,7 +122,8 @@
             console.log(grade.options[grade.selectedIndex].textContent);
         }
 
-        function resetBH() {
+        function resetBH(e) {
+            e.preventDefault()
             routeTotal = 0
             routeSum = 0
             routeArray = []
