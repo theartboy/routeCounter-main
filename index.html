@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Route Counter</title>
+    <style>
+        body {
+            font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+
+        main {
+            width: 100%;
+            /* display: flex; */
+            padding-bottom: 3rem;
+        }
+        select{
+            margin-left: 1rem;
+            width: 10rem;
+            font-size: 1.2rem;
+        }
+        section {
+            /* width: 50%; */
+            display: flex;
+            justify-content: space-evenly;
+        }
+
+        button {
+            padding: .5rem 2rem;
+            width:10rem;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Route Counter</h1>
+    <main>
+        <select name="grade" id="grade">
+            <option value="1">5.5</option>
+            <option value="2">5.6</option>
+            <option value="3">5.7</option>
+            <option value="4">5.8</option>
+            <option value="5">5.9</option>
+            <option value="6">5.10-</option>
+            <option value="7">5.10+</option>
+            <option value="8">5.11-</option>
+            <option value="9">5.11+</option>
+            <option value="10">5.12-</option>
+            <option value="11">5.12+</option>
+        </select>
+
+    </main>
+    <section>
+        <button id="add">Add</button>
+        <button id="sub">Remove</button>
+    </section>
+
+    <p id="gradeAverage">Route Grade Average: 0.00</p>
+    <p id="totalRoutes">Total Routes: 0</p>
+    <p id="routeList"></p>
+    <section>
+            <button id="reset">reset</button>
+
+    </section>
+
+    <script>
+        let grade = document.querySelector('#grade')
+        let add = document.querySelector('#add')
+        let sub = document.querySelector('#sub')
+        let reset = document.querySelector('#reset')
+        let gradeAverage = document.querySelector('#gradeAverage')
+        let totalRoutes = document.querySelector('#totalRoutes')
+        let routeList = document.querySelector('#routeList')
+        add.addEventListener('click', addBH, false)
+        sub.addEventListener('click', subBH, false)
+        reset.addEventListener('click', resetBH, false)
+
+        let routeTotal = 0
+        let routeSum = 0
+        let routeArray = []
+        let routeNames = []
+        let gv = 0
+        let gradeList = ["5.4","5.5","5.6","5.7","5.8","5.9","5.10-","5.10+","5.11-","5.11+","5.12-","5.12+"]
+
+        function addBH() {
+            gv = parseInt(grade.options[grade.selectedIndex].value)
+            routeTotal += 1
+            routeSum += gv
+            routeArray.push(gv)
+            routeNames.push(grade.options[grade.selectedIndex].textContent)
+            updateText()
+        }
+
+        function subBH() {
+            if (routeTotal > 0) {
+                gv = parseInt(grade.options[grade.selectedIndex].value)
+                routeTotal -= 1
+                routeSum -= gv
+                let i = routeArray.indexOf(gv)
+                console.log("i is "+i);
+                routeArray.splice(i,1)
+                routeNames.splice(i,1)
+                updateText()
+            }
+        }
+
+        function updateText() {
+            if (routeTotal == 0) {
+                gradeAverage.textContent = "Route Grade Average: 0"
+            } else {
+                let avg = Math.round(routeSum/routeTotal)
+                gradeAverage.textContent = `Route Grade Average: ${gradeList[avg]}`
+            }
+            totalRoutes.textContent = `Total Routes ${routeTotal}`
+            routeList.textContent = routeNames
+            console.log(routeArray);
+            console.log(grade.options[grade.selectedIndex].textContent);
+        }
+
+        function resetBH() {
+            routeTotal = 0
+            routeSum = 0
+            routeArray = []
+            updateText()
+        }
+    </script>
+</body>
+
+</html>
