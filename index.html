@@ -15,6 +15,7 @@
             width: 100%;
             /* display: flex; */
             padding-bottom: 3rem;
+            /* background-color: green; */
         }
         select{
             margin-left: 1rem;
@@ -32,25 +33,62 @@
             width:10rem;
             font-size: 1.2rem;
         }
+        nav ul li{
+            display: inline;
+            padding: 1em;
+            border:1px solid green;
+            width: 10rem;
+        }
+        ul{
+            padding-bottom: 1rem;
+        }
+        .active {background-color: rgb(250, 93, 250);}
+        .inactive {background-color: rgb(149, 137, 170);}
+        .displayNone{display: none;}
+        .displayBlock{display:block;}
+        /* h1{text-align: center;} */
     </style>
 </head>
 
 <body>
     <h1>Route Counter</h1>
     <main>
-        <select name="grade" id="grade">
-            <option value="1">5.5</option>
-            <option value="2">5.6</option>
-            <option value="3">5.7</option>
-            <option value="4">5.8</option>
-            <option value="5">5.9</option>
-            <option value="6">5.10-</option>
-            <option value="7">5.10+</option>
-            <option value="8">5.11-</option>
-            <option value="9">5.11+</option>
-            <option value="10">5.12-</option>
-            <option value="11">5.12+</option>
-        </select>
+        <nav>
+            <ul>
+                <li id="ropeButton" class="active">YDS</li>
+                <li id="boulderButton" class="inactive">V-Grade</li>
+            </ul>
+        </nav>
+        <div id="rope" class="displayBlock">
+            <select name="grade" id="grade">
+                <option value="1">5.5</option>
+                <option value="2">5.6</option>
+                <option value="3">5.7</option>
+                <option value="4">5.8</option>
+                <option value="5">5.9</option>
+                <option value="6">5.10-</option>
+                <option value="7">5.10+</option>
+                <option value="8">5.11-</option>
+                <option value="9">5.11+</option>
+                <option value="10">5.12-</option>
+                <option value="11">5.12+</option>
+            </select>    
+        </div>
+        <div id="boulder" class="displayNone">
+            <select name="grade" id="vgrade">
+                <option value="1">VB-V0</option>
+                <option value="2">V0-V1</option>
+                <option value="3">V1-V2</option>
+                <option value="4">V2-V3</option>
+                <option value="5">V3-V4</option>
+                <option value="6">V4-V5</option>
+                <option value="7">V5-V6</option>
+                <option value="8">V6-V7</option>
+                <option value="9">V7-V8</option>
+                <option value="10">V8-V9</option>
+                <option value="11">V9-V10</option>
+            </select>    
+        </div>
 
     </main>
     <section>
@@ -67,7 +105,12 @@
     </section>
 
     <script>
+        let rope = document.querySelector('#rope')
+        let boulder = document.querySelector('#boulder')
+        let ropeButton = document.querySelector('#ropeButton')
+        let boulderButton = document.querySelector('#boulderButton')
         let grade = document.querySelector('#grade')
+        let vgrade = document.querySelector('#vgrade')
         let add = document.querySelector('#add')
         let sub = document.querySelector('#sub')
         let reset = document.querySelector('#reset')
@@ -77,28 +120,58 @@
         add.addEventListener('click', addBH, false)
         sub.addEventListener('click', subBH, false)
         reset.addEventListener('click', resetBH, false)
-
+        ropeButton.addEventListener('click', toggleBH, false)
+        boulderButton.addEventListener('click', toggleBH, false)
         let routeTotal = 0
         let routeSum = 0
         let routeArray = []
         let routeNames = []
         let gv = 0
         let gradeList = ["5.4","5.5","5.6","5.7","5.8","5.9","5.10-","5.10+","5.11-","5.11+","5.12-","5.12+"]
+        let vgradeList = ["VB-V0","V0-V1","V1-V2","V2-V3","V3-V4","V4-V5","V5-V6","V6-V7","V7-V8","V8-V9","V9-V10"]
+        let activeTab = true;//true is yds, false is vgrade
+
+        function toggleBH(e){
+            e.preventDefault()
+            if(activeTab){
+                //switch to boulder
+                ropeButton.className = 'inactive'
+                boulderButton.className = 'active'
+                rope.className = 'displayNone'
+                boulder.className = 'displayBlock'
+            }else {
+                //switch to rope
+                ropeButton.className = 'active'
+                boulderButton.className = 'inactive'
+                boulder.className = 'displayNone'
+                rope.className = 'displayBlock'
+            }
+            activeTab = !activeTab
+        }
 
         function addBH(e) {
             e.preventDefault()
-            gv = parseInt(grade.options[grade.selectedIndex].value)
+            if(activeTab==true){
+                gv = parseInt(grade.options[grade.selectedIndex].value)
+                routeNames.push(grade.options[grade.selectedIndex].textContent)
+            }else{
+                gv = parseInt(vgrade.options[vgrade.selectedIndex].value)
+                routeNames.push(vgrade.options[vgrade.selectedIndex].textContent)
+            }
             routeTotal += 1
             routeSum += gv
             routeArray.push(gv)
-            routeNames.push(grade.options[grade.selectedIndex].textContent)
-            updateText()
+             updateText()
         }
 
         function subBH(e) {
             e.preventDefault()
             if (routeTotal > 0) {
-                gv = parseInt(grade.options[grade.selectedIndex].value)
+                if(activeTab==true){
+                    gv = parseInt(grade.options[grade.selectedIndex].value)
+                }else{
+                    gv = parseInt(vgrade.options[vgrade.selectedIndex].value)
+                }
                 routeTotal -= 1
                 routeSum -= gv
                 let i = routeArray.indexOf(gv)
@@ -114,7 +187,11 @@
                 gradeAverage.textContent = "Route Grade Average: 0"
             } else {
                 let avg = Math.round(routeSum/routeTotal)
-                gradeAverage.textContent = `Route Grade Average: ${gradeList[avg]}`
+                if(activeTab==true){
+                    gradeAverage.textContent = `Route Grade Average: ${gradeList[avg]}`
+                }else{
+                    gradeAverage.textContent = `Route Grade Average: ${vgradeList[avg]}`
+                }
             }
             totalRoutes.textContent = `Total Routes ${routeTotal}`
             routeList.textContent = routeNames
