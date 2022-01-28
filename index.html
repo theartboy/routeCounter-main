@@ -117,6 +117,8 @@
         <button id="emailButton">Email Log</button>
 
     </section>
+
+    <p id="timeText">Time</p>
     <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script>
         let rope = document.querySelector('#rope')
@@ -132,6 +134,8 @@
         let totalRoutes = document.querySelector('#totalRoutes')
         let routeList = document.querySelector('#routeList')
         let emailButton = document.querySelector('#emailButton')
+        let timeText = document.querySelector('#timeText')
+
         add.addEventListener('click', addBH, false)
         sub.addEventListener('click', subBH, false)
         reset.addEventListener('click', resetBH, false)
@@ -148,13 +152,36 @@
         let vgradeList = ["VB-V0","V0-V1","V1-V2","V2-V3","V3-V4","V4-V5","V5-V6","V6-V7","V7-V8","V8-V9","V9-V10"]
         let activeTab = true;//true is yds, false is vgrade
 
+        let time = new Date()
+        let hrs = time.getHours()
+        let minutes = time.getMinutes()
+        let year = time.getFullYear()
+        let month = time.getMonth()
+        let date = time.getDate()
+        let months = ["January","February","March","April","May","June","July","August","September","October","November","December"]
+
+        if (minutes < 10) {
+          minutes = `0${minutes}`
+        }
+        let timeString = ""
+        if (hrs == 12) {
+          timeString = `12:${minutes} PM`
+        } else if (hrs > 12) {
+          timeString = `${hrs-12}:${minutes} PM`
+        } else if (hrs == 0) {
+          timeString = `12:${minutes} AM`
+        } else {
+          timeString = `${hrs}:${minutes} AM`
+        }
+        timeText.innerHTML = `${months[month]} ${date}, ${year}.  ${timeString}`
+
         function emailBH(){
             Email.send({
                 SecureToken : "6eeead69-28b2-4a60-9c49-c2f719116caa",
                 To : 'john@theartboy.net',
                 From : "john@theartboy.net",
                 Subject : "Climb Route Log",
-                Body : `${new Date()}<br/>
+                Body : `${months[month]} ${date}, ${year} <br/>Current Time: ${timeString}<br/>
                 The routes for today were: ${routeNames.join(", ")}`
             }).then(
             message => alert(message+" log sent.")
