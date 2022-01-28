@@ -181,7 +181,7 @@
                 To : 'john@theartboy.net',
                 From : "john@theartboy.net",
                 Subject : "Climb Route Log",
-                Body : `${months[month]} ${date}, ${year} <br/>Current Time: ${timeString}<br/>
+                Body : `${months[month]} ${date}, ${year}.  ${timeString}<br/>
                 The routes for today were: ${routeNames.join(", ")}`
             }).then(
             message => alert(message+" log sent.")
