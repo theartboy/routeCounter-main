@@ -96,14 +96,15 @@
         <button id="sub">Remove</button>
     </section>
 
-    <p id="gradeAverage">Route Grade Average: 0.00</p>
+    <p id="gradeAverage">Route Grade Average: 0</p>
     <p id="totalRoutes">Total Routes: 0</p>
     <p id="routeList"></p>
     <section>
-            <button id="reset">reset</button>
+        <button id="reset">reset</button>
+        <button id="emailButton">Email Log</button>
 
     </section>
-
+    <script src="https://smtpjs.com/v3/smtp.js"></script>
     <script>
         let rope = document.querySelector('#rope')
         let boulder = document.querySelector('#boulder')
@@ -117,11 +118,14 @@
         let gradeAverage = document.querySelector('#gradeAverage')
         let totalRoutes = document.querySelector('#totalRoutes')
         let routeList = document.querySelector('#routeList')
+        let emailButton = document.querySelector('#emailButton')
         add.addEventListener('click', addBH, false)
         sub.addEventListener('click', subBH, false)
         reset.addEventListener('click', resetBH, false)
         ropeButton.addEventListener('click', toggleBH, false)
         boulderButton.addEventListener('click', toggleBH, false)
+        emailButton.addEventListener('click',emailBH,false)
+
         let routeTotal = 0
         let routeSum = 0
         let routeArray = []
@@ -130,6 +134,19 @@
         let gradeList = ["5.4","5.5","5.6","5.7","5.8","5.9","5.10-","5.10+","5.11-","5.11+","5.12-","5.12+"]
         let vgradeList = ["VB-V0","V0-V1","V1-V2","V2-V3","V3-V4","V4-V5","V5-V6","V6-V7","V7-V8","V8-V9","V9-V10"]
         let activeTab = true;//true is yds, false is vgrade
+
+        function emailBH(){
+            Email.send({
+                SecureToken : "6eeead69-28b2-4a60-9c49-c2f719116caa",
+                To : 'john@theartboy.net',
+                From : "john@theartboy.net",
+                Subject : "Climb Route Log",
+                Body : `${new Date()}<br/>
+                The routes for today were: ${routeNames.join(", ")}`
+            }).then(
+            message => console.log(message)
+            );
+        }
 
         function toggleBH(e){
             e.preventDefault()
@@ -194,7 +211,7 @@
                 }
             }
             totalRoutes.textContent = `Total Routes ${routeTotal}`
-            routeList.textContent = routeNames
+            routeList.textContent = routeNames.join(", ")
             console.log(routeArray);
             console.log(grade.options[grade.selectedIndex].textContent);
         }
